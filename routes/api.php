@@ -14,4 +14,6 @@ Route::apiResource('comments', CommentController::class);
 Route::apiResource('profiles', ProfileController::class);
 Route::apiResource('tags', TagController::class);
 
+Route::post('posts/{id}/restore', [PostController::class, 'restore'])->name('posts.restore');
+
 

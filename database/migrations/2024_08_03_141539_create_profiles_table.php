@@ -10,9 +10,6 @@ return new class extends Migration
     {
         Schema::create('profiles', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->index()->constrained('users');
-            $table->date('birthed_at');
-            $table->string('avatar_path')->nullable();
             $table->timestamps();
         });
     }

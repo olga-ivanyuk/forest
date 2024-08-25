@@ -6,24 +6,19 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('post_profile_likes', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('post_id')->index()->constrained('posts');
+        Schema::table('posts', function (Blueprint $table) {
             $table->foreignId('profile_id')->index()->constrained('profiles');
-            $table->timestamps();
+            $table->foreignId('category_id')->index()->constrained('categories');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('post_profile_likes');
+        Schema::table('posts', function (Blueprint $table) {
+            $table->dropColumn('profile_id');
+            $table->dropColumn('category_id');
+        });
     }
 };

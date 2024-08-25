@@ -8,7 +8,6 @@ use App\Http\Requests\Post\UpdateRequest;
 use App\Http\Resources\Post\PostResource;
 use App\Models\Post;
 use App\Services\PostService;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class PostController extends Controller
@@ -30,7 +29,7 @@ class PostController extends Controller
         return PostResource::make($post)->resolve();
     }
 
-    public function update(Post $post, UpdateRequest $request)
+    public function update(Post $post, UpdateRequest $request): array
     {
         $data = $request->validated();
         $post = PostService::update($data, $post);
@@ -44,5 +43,16 @@ class PostController extends Controller
         return response([
             'message' => 'post deleted',
         ], Response::HTTP_OK);
+    }
+
+    public function restore($id): array
+    {
+        $post = Post::withTrashed()->findOrFail($id);
+
+        if ($post->trashed()) {
+            $post->restore();
+        }
+
+        return PostResource::make($post)->resolve();
     }
 }

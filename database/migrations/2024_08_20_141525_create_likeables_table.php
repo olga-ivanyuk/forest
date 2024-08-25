@@ -8,15 +8,14 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('post_tag', function (Blueprint $table) {
+        Schema::create('likeables', function (Blueprint $table) {
             $table->id();
-//            $table->unique(['post_id', 'tag_id']);
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('post_tag');
+        Schema::dropIfExists('likeables');
     }
 };

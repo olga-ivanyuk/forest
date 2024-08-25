@@ -10,15 +10,6 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->text('description')->nullable();
-            $table->text('content')->nullable();
-            $table->dateTime('published_at')->nullable();
-            $table->unsignedInteger('views')->nullable();
-            $table->unsignedSmallInteger('status')->default(1);
-            $table->foreignId('profile_id')->index()->constrained('profiles');
-            $table->foreignId('category_id')->index()->constrained('categories');
-            $table->string('image_path')->nullable();
             $table->timestamps();
         });
     }

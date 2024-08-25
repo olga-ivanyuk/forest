@@ -4,65 +4,51 @@ namespace App\Console\Commands;
 
 use App\Models\Category;
 use App\Models\Comment;
+use App\Models\Image;
 use App\Models\Post;
 use App\Models\Profile;
 use App\Models\Tag;
+use App\Models\User;
+use App\Models\Video;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Hash;
 
 class GoCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'go';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Command description';
 
-    /**
-     * Execute the console command.
-     */
     public function handle(): void
     {
+        // One to One (Polymorphic) Image-Profile-User-Post
+        $profile = Profile::query()->first();
+        $user = User::query()->first();
         $post = Post::query()->first();
-        dd($post->likedByProfiles);
-//        Post::query()
-//            ->create([
-//            'title' => 'My title 3',
-//        ]);
 
-//        Category::query()
-//            ->create([
-//                'title' => 'My 3 title category',
-//            ]);
+        $image_profile = $profile->image();
+        $image_user = $user->image();
+        $image_post = $post->image();
 
-//        Comment::query()
-//            ->create([
-//                'content' => 'My 4 content',
-//            ]);
+        $image = Image::query()->first(); //Retrieving
+        $imageable = $image->imageable;
+//        dd($image_profile, $image_user, $image_post);
+//        dd($imageable);
 
-//        Profile::query()
-//            ->create([
-//                'birthed_at' => '1996-12-02',
-//            ]);
+        // One to Many (Polymorphic) Comment-Post-Video
+        $post = Post::query()->first();
+        $video = Video::query()->first();
+        $comments_post = $post->comments();
+        $comments_video = $video->comments();
+        $comment = Comment::query()->first();
+        $comments = $comment->commentable();
 
-//        Tag::query()
-//            ->create([
-//                'title' => 'tag1',
-//            ]);
+//        dd($comments_post);
+//        dd($comments);
 
-//        $post = Post::query()->find(1);
-
-//        $post->update([
-//            'title' => 'My title 2',
-//            ]);
-//        $post->delete();
-//        dd($post);
+        //  Many to Many (Polymorphic) Like-Comment-Post
+        $post = Post::find(4);
+        $profile = Profile::query()->first();
+        dd($post->likedProfiles());
+//        dd($profile->likedPost);
     }
 }

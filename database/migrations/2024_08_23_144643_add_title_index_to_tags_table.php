@@ -8,15 +8,15 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('post_tag', function (Blueprint $table) {
-            $table->id();
-//            $table->unique(['post_id', 'tag_id']);
-            $table->timestamps();
+        Schema::table('tags', function (Blueprint $table) {
+            $table->index('title');
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('post_tag');
+        Schema::table('tags', function (Blueprint $table) {
+            $table->dropIndex(['title']);
+        });
     }
 };
