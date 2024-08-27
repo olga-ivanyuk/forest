@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Observers\PostObserver;
+use App\Traits\BootedTrait;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,12 +14,19 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+//#[ObservedBy(PostObserver::class)]
 class Post extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, BootedTrait;
 
     protected $guarded = false;
     protected $table = 'posts';
+
+    protected $casts = [
+        'old_attributes' => 'array',
+        'new_attributes' => 'array',
+        'changed_at' => 'datetime',
+    ];
 
 //    public function comments(): HasMany
 //    {
@@ -52,4 +62,14 @@ class Post extends Model
     {
         return $this->morphToMany(Profile::class, 'likeable');
     }
+
+    public function profile(): BelongsTo
+    {
+        return $this->belongsTo(Profile::class);
+    }
+
+//    public function logs(): HasMany
+//    {
+//        return $this->hasMany(Log::class);
+//    }
 }

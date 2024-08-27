@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Events\Post\LoggingStartedEvent;
 use App\Models\Category;
 use App\Models\Comment;
 use App\Models\Image;
@@ -21,34 +22,48 @@ class GoCommand extends Command
     public function handle(): void
     {
         // One to One (Polymorphic) Image-Profile-User-Post
-        $profile = Profile::query()->first();
-        $user = User::query()->first();
-        $post = Post::query()->first();
-
-        $image_profile = $profile->image();
-        $image_user = $user->image();
-        $image_post = $post->image();
-
-        $image = Image::query()->first(); //Retrieving
-        $imageable = $image->imageable;
+//        $profile = Profile::query()->first();
+//        $user = User::query()->first();
+//        $image_profile = $profile->image();
+//        $image_user = $user->image();
+//        $image_post = $post->image();
+//
+//        $image = Image::query()->first(); //Retrieving
+//        $imageable = $image->imageable;
 //        dd($image_profile, $image_user, $image_post);
 //        dd($imageable);
 
         // One to Many (Polymorphic) Comment-Post-Video
-        $post = Post::query()->first();
-        $video = Video::query()->first();
-        $comments_post = $post->comments();
-        $comments_video = $video->comments();
-        $comment = Comment::query()->first();
-        $comments = $comment->commentable();
+//        $post = Post::query()->first();
+//        $video = Video::query()->first();
+//        $comments_post = $post->comments();
+//        $comments_video = $video->comments();
+//        $comment = Comment::query()->first();
+//        $comments = $comment->commentable();
 
 //        dd($comments_post);
 //        dd($comments);
 
         //  Many to Many (Polymorphic) Like-Comment-Post
-        $post = Post::find(4);
-        $profile = Profile::query()->first();
-        dd($post->likedProfiles());
+//        $post = Post::find(4);
+//        $profile = Profile::query()->first();
+//        dd($post->likedProfiles());
 //        dd($profile->likedPost);
+
+//        $post = Post::query()->first();
+        $post = Post::query()->find(2);
+//        $user = User::query()->find(5);
+//        $comment = Comment::query()->find(2);
+        LoggingStartedEvent::dispatch($post);
+//        $post->update([
+//            'title' => 'new title 1',
+//            'description' => 'new description 1',
+//            'content' => 'new content 1',
+//            'published_at' => '24.06.1990',
+//            'views' => 5,
+//        ]);
+
+//        $post = Post::query()->find(1);
+//        $post->delete();
     }
 }

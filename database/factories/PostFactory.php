@@ -20,9 +20,10 @@ class PostFactory extends Factory
     {
         return [
             'title' =>  fake()->realTextBetween(7,100),
+            'description' =>  fake()->realTextBetween(5,30),
             'content' =>    fake()-> realTextBetween(200, 700),
             'published_at' =>   fake()-> dateTime(),
-            'profile_id' => Profile::query()->first()->id,
+            'profile_id' => Profile::query()->inRandomOrder()->first()->id,
             'category_id' => Category::query()->inRandomOrder()->first()->id,
             'image_path' => fake()-> imageUrl,
             'status' => fake()-> numberBetween(1,3),
