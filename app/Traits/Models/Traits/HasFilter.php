@@ -10,6 +10,6 @@ trait HasFilter
     public function scopeFilter(Builder $builder, array $data): Builder
     {
         $ClassName = 'App\\Http\\Filters\\' .class_basename($this) . 'Filter';
-        return (new PostFilter())->apply($builder, $data);
+        return (new $ClassName())->apply($builder, $data);
     }
 }

@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\Profile\IndexRequest;
 use App\Http\Requests\Profile\StoreRequest;
 use App\Http\Requests\Profile\UpdateRequest;
+use App\Http\Resources\Comment\CommentResource;
 use App\Http\Resources\Profile\ProfileResource;
+use App\Models\Comment;
 use App\Models\Profile;
 use App\Services\ProfileService;
 use Illuminate\Http\Request;
@@ -13,9 +16,11 @@ use Illuminate\Http\Response;
 
 class ProfileController extends Controller
 {
-    public function index(): array
+    public function index(IndexRequest $indexRequest): array
     {
-        return ProfileResource::collection(Profile::all())->resolve();
+        $data = $indexRequest->validated();
+        $profiles = Profile::filter($data)->get();
+        return ProfileResource::collection($profiles)->resolve();
     }
 
     public function show(Profile $profile): array

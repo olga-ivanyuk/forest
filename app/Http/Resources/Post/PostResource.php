@@ -24,6 +24,8 @@ class PostResource extends JsonResource
             'published_at' => $this->published_at,
             'views' =>  $this->views,
             'status' =>  $this->status,
+            'profile' => $this->profile->name,
+            'category' => $this->category->title,
         ];
     }
 }

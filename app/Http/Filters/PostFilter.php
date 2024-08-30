@@ -80,8 +80,10 @@ class PostFilter extends AbstractFilter
 
     protected function categoryTitle(Builder $builder, $value)
     {
-        $builder->whereHas('category', function ($query) use ($value) {
-            $query->where('title', 'ilike', "%$value%");
-        });
+        $builder->whereRelation('category', 'title', 'ilike', "%$value%");
+
+//        $builder->whereHas('category', function ($query) use ($value) {
+//            $query->where('title', 'ilike', "%$value%");
+//        });
     }
 }

@@ -73,9 +73,9 @@ class User extends Authenticatable
 
     protected static function booted(): void
     {
-        static::retrieved(function (){
-            dd(555);
-        });
+//        static::retrieved(function (){
+//            dd(555);
+//        });
 
         static::created(function (User $user) {
             $user->profile()->create([
