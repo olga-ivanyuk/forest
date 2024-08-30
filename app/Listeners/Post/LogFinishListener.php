@@ -15,6 +15,6 @@ class LogFinishListener
 
     public function handle(LoggingFinishedEvent $event): void
     {
-        //
+        dd('finish writing to Log');
     }
 }

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Filters\PostFilter;
+use App\Http\Requests\Api\Post\IndexRequest;
 use App\Http\Requests\Post\StoreRequest;
 use App\Http\Requests\Post\UpdateRequest;
 use App\Http\Resources\Post\PostResource;
@@ -12,9 +14,11 @@ use Illuminate\Http\Response;
 
 class PostController extends Controller
 {
-    public function index(): array
+    public function index(IndexRequest $indexRequest): array
     {
-        return PostResource::collection(Post::all())->resolve();
+        $data = $indexRequest->validated();
+        $posts = Post::filter($data)->get();
+        return PostResource::collection($posts)->resolve();
     }
 
     public function show(Post $post): array

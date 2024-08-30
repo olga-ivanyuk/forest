@@ -13,6 +13,6 @@ class LogStartListener
 
     public function handle(LoggingStartedEvent $event): void
     {
-        dd(11);
+        dump('start writing to Log');
     }
 }

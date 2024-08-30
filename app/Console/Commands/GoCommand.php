@@ -51,10 +51,10 @@ class GoCommand extends Command
 //        dd($profile->likedPost);
 
 //        $post = Post::query()->first();
-        $post = Post::query()->find(2);
-//        $user = User::query()->find(5);
+//        $post = Post::query()->find(2);
+        $user = User::query()->find(5);
 //        $comment = Comment::query()->find(2);
-        LoggingStartedEvent::dispatch($post);
+//        LoggingStartedEvent::dispatch($post);
 //        $post->update([
 //            'title' => 'new title 1',
 //            'description' => 'new description 1',

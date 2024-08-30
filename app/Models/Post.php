@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use App\Http\Filters\PostFilter;
 use App\Observers\PostObserver;
 use App\Traits\BootedTrait;
+use App\Traits\Models\Traits\HasFilter;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,7 +20,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 //#[ObservedBy(PostObserver::class)]
 class Post extends Model
 {
-    use HasFactory, SoftDeletes, BootedTrait;
+    use HasFactory, SoftDeletes, BootedTrait, HasFilter;
 
     protected $guarded = false;
     protected $table = 'posts';
@@ -55,7 +58,7 @@ class Post extends Model
 
     public function comments(): MorphMany
     {
-      return $this->morphMany(Comment::class, 'commentable');
+        return $this->morphMany(Comment::class, 'commentable');
     }
 
     public function likedProfiles(): morphToMany

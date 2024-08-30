@@ -11,7 +11,7 @@ class PostObserver
 {
     public function retrieved(Post $post): void
     {
-       LoggingStartedEvent::dispatch($post);
+//       LoggingStartedEvent::dispatch($post);
 
         Log::query()->create([
             'model_id' => $post->id,
