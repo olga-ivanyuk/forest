@@ -15,22 +15,40 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::query()
-            ->firstOrCreate([
-                'email' => 'user@mail.ru'
-            ], [
+        $users = [
+            [
+                'email' => 'user@mail.ru',
                 'name' => 'user',
                 'password' => Hash::make(123456),
-            ]);
+            ],
+            [
+                'email' => 'post@mail.ru',
+                'name' => 'admin_post',
+                'password' => Hash::make(123456),
+            ],
+            [
+                'email' => 'comment@gmail.com',
+                'name' => 'admin_comment',
+                'password' => Hash::make(123456),
+            ]
+        ];
 
+        foreach ($users as $user) {
+            $user = User::query()->firstOrCreate(
+                ['email' => $user['email']],
+                $user
+            );
 
-        $user->profile()->create();
+            $user->profile()->create();
+        }
 
         $this->call([
+            RoleSeeder::class,
+            PermissionsSeeder::class,
             UserSeeder::class,
             TagSeeder::class,
             CategorySeeder::class,
-            PostSeeder::class,
+//            PostSeeder::class,
             CommentSeeder::class,
         ]);
 

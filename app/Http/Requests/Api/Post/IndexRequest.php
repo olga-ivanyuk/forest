@@ -31,6 +31,7 @@ class IndexRequest extends FormRequest
             'status' => 'nullable|integer',
             'profile_name' => 'nullable|string',
             'category_title' => 'nullable|string',
+            'user_name' => 'nullable|string',
         ];
     }
 }

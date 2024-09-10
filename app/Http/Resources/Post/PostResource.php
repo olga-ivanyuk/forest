@@ -26,6 +26,7 @@ class PostResource extends JsonResource
             'status' =>  $this->status,
             'profile' => $this->profile->name,
             'category' => $this->category->title,
+            'user' => $this->profile->user->name,
         ];
     }
 }

@@ -21,6 +21,7 @@ class PostFilter extends AbstractFilter
         'status',
         'profile_name',
         'category_title',
+        'user_name',
     ];
 
     protected function id(Builder $builder, $value)
@@ -78,12 +79,21 @@ class PostFilter extends AbstractFilter
         $builder->whereRelation('profile', 'name', 'ilike', "%$value%");
     }
 
+    protected function userName(Builder $builder, $value)
+    {
+//        $builder->whereHas('profile', function($q) use ($value) {
+//            $q->whereHas('user', function($query) use ($value) {
+//                $query->where('name', 'ilike', "%$value%");
+//            });
+//        });
+        $builder->whereRelation('profile.user', 'name', 'ilike', "%$value%");
+//        $builder->whereHas('profile.user', function ($query) use ($value) {
+//            $query->where('name', 'ilike', "%$value%");
+//        });
+    }
+
     protected function categoryTitle(Builder $builder, $value)
     {
         $builder->whereRelation('category', 'title', 'ilike', "%$value%");
-
-//        $builder->whereHas('category', function ($query) use ($value) {
-//            $query->where('title', 'ilike', "%$value%");
-//        });
     }
 }

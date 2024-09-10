@@ -13,7 +13,10 @@ abstract class AbstractFilter
         foreach ($this->keys as $key) {
             if (isset($data[$key])) {
                 $method = Str::camel($key);
-                $this->$method($builder, $data[$key]);
+
+                if (method_exists($this, $method)) {
+                    $this->$method($builder, $data[$key]);
+                }
             }
         }
         return $builder;

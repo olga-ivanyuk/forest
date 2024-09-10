@@ -9,7 +9,12 @@ trait HasFilter
 {
     public function scopeFilter(Builder $builder, array $data): Builder
     {
-        $ClassName = 'App\\Http\\Filters\\' .class_basename($this) . 'Filter';
-        return (new $ClassName())->apply($builder, $data);
+        $className = 'App\\Http\\Filters\\' . class_basename($this) . 'Filter';
+
+        if (!class_exists($className)) {
+            throw new \Exception("Filter class {$className} not found.");
+        }
+
+        return (new $className())->apply($builder, $data);
     }
 }
