@@ -24,9 +24,11 @@ class PostResource extends JsonResource
             'published_at' => $this->published_at,
             'views' =>  $this->views,
             'status' =>  $this->status,
-            'profile' => $this->profile->name,
-            'category' => $this->category->title,
-            'user' => $this->profile->user->name,
+            'profile_id' => $this->profile->id,
+            'category_id' => $this->category->id,
+//            'profile' => $this->profile->name,
+//            'category' => $this->category->title,
+//            'user' => $this->profile->user->name,
         ];
     }
 }

@@ -25,8 +25,10 @@ class StoreRequest extends FormRequest
             'published_at'=> 'nullable|date_format:Y-m-d',
             'views'=> 'nullable',
             'status'=> 'nullable',
-            'user'=> 'nullable|string',
-            'category'=> 'nullable|string',
+            'profile_id'=> 'integer|exists:profiles,id',
+            'category_id'=> 'integer|exists:categories,id',
+//            'user'=> 'nullable|string',
+//            'category'=> 'nullable|string',
             'tag'=> 'nullable|string',
             'image_path'=> 'nullable|string',
         ];

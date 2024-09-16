@@ -45,14 +45,15 @@ class GoCommand extends Command
 //        dd($comments);
 
         //  Many to Many (Polymorphic) Like-Comment-Post
-//        $post = Post::find(4);
+        $post = Post::query()->find(5);
+//        \Illuminate\Support\Facades\Log::channel('posts')->info('post {id} retrieved', ['id' => $post->id]);
 //        $profile = Profile::query()->first();
 //        dd($post->likedProfiles());
 //        dd($profile->likedPost);
 
 //        $post = Post::query()->first();
 //        $post = Post::query()->find(2);
-        $user = User::query()->find(5);
+//        $user = User::query()->find(5);
 //        $comment = Comment::query()->find(2);
 //        LoggingStartedEvent::dispatch($post);
 //        $post->update([

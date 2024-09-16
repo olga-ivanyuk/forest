@@ -16,6 +16,11 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::post('me', [AuthController::class, 'me']);
 });
 
+Route:: post('/posts/process', [PostController::class, 'process']);
+Route:: post('/posts/updatePost', [PostController::class, 'updatePost']);
+Route:: post('/categories/processCategory', [CategoryController::class, 'processCategory']);
+Route:: post('/categories/updateCategory', [CategoryController::class, 'updateCategory']);
+
 Route::group(['middleware' => ['jwt.auth', IsAdminMiddleware::class]], function () {
     Route::apiResource('posts', PostController::class);
     Route::apiResource('comments', CommentController::class);

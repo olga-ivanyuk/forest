@@ -1,5 +1,6 @@
 <?php
 
+use App\LogFormatter\PostLogFormatter;
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
@@ -126,6 +127,25 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+
+        'posts' => [
+            'driver' => 'single',
+            'tap' => [PostLogFormatter::class],
+            'path' => storage_path('logs/post/posts.log'),
+            'replace_placeholders' => true,
+        ],
+
+        'categories' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/category/categories.log'),
+            'replace_placeholders' => true,
+        ],
+
+//        'dynamic_logs' => [
+//            'driver' => 'single',
+//            'path' => storage_path('logs/post/dynamic.log'),
+//            'replace_placeholders' => true,
+//        ]
 
     ],
 

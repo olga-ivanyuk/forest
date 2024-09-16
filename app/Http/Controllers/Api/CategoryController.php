@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Exceptions\ExceptionFactory;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Category\IndexRequest;
 use App\Http\Requests\Category\StoreRequest;
@@ -49,5 +50,35 @@ class CategoryController extends Controller
         return response([
             'message' => 'category deleted',
         ], Response::HTTP_OK);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function processCategory(): void
+    {
+        $title = 'non_new_11';
+        $category = Category::query()->firstOrCreate(['title' => $title],
+            [
+                'title' => $title
+            ],
+        );
+
+        ExceptionFactory::create($category, 'firstOrCreate');
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function updateCategory(): void
+    {
+        $title = 'a';
+        $category = Category::query()->updateOrCreate([
+            'title' => $title
+        ], [
+            'title' => 'aaaaaaaaaaaaaaa'
+        ]);
+
+        ExceptionFactory::create($category, 'updateOrCreate');
     }
 }
