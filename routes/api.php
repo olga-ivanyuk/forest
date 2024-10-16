@@ -22,10 +22,10 @@ Route:: post('/categories/processCategory', [CategoryController::class, 'process
 Route:: post('/categories/updateCategory', [CategoryController::class, 'updateCategory']);
 
 Route::group(['middleware' => ['jwt.auth', IsAdminMiddleware::class]], function () {
-    Route::apiResource('posts', PostController::class);
+
     Route::apiResource('comments', CommentController::class);
 });
-
+Route::apiResource('posts', PostController::class);
 Route::apiResource('categories', CategoryController::class);
 Route::apiResource('profiles', ProfileController::class);
 Route::apiResource('tags', TagController::class);

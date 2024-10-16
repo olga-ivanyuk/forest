@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.main-container {
+    background-color: #ebf3e8;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.input-field {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    transition: border-color 0.3s ease;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: #4f46e5;
+}
+
+.item {
+    background-color: #f9f9f9;
+    padding: 0.75rem;
+    transition: background-color 0.3s ease;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    border: gray;
+}
+
+.item:hover {
+    background-color: #f1f5f9;
+}
+
+.btn-add {
+    background-color: #16a34a;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-add:hover {
+    background-color: #15803d;
+}
+
+.btn-back {
+    background-color: #38bdf8;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-back:hover {
+    background-color: #0284c7;
+}
+
+.page-title {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    color: #2d3748;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e2e8f0;
+}

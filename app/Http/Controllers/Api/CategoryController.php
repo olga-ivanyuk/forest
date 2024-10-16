@@ -8,7 +8,7 @@ use App\Http\Requests\Api\Category\IndexRequest;
 use App\Http\Requests\Category\StoreRequest;
 use App\Http\Requests\Category\UpdateRequest;
 use App\Http\Resources\Category\CategoryResource;
-use App\Http\Resources\Post\PostResource;
+use App\Http\Resources\Post\UserResource;
 use App\Models\Category;
 use App\Models\Post;
 use App\Services\CategoryService;

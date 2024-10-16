@@ -2,20 +2,17 @@
 
 namespace App\Models;
 
-use App\Http\Filters\PostFilter;
-use App\Observers\PostObserver;
 use App\Traits\BootedTrait;
 use App\Traits\Models\Traits\HasFilter;
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
-use Illuminate\Database\Eloquent\Builder;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 //#[ObservedBy(PostObserver::class)]
 class Post extends Model
@@ -31,10 +28,10 @@ class Post extends Model
         'changed_at' => 'datetime',
     ];
 
-//    public function comments(): HasMany
-//    {
-//        return $this->hasMany(Comment::class);
-//    }
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
 
     public function tags(): BelongsToMany
     {
@@ -56,10 +53,10 @@ class Post extends Model
         return $this->morphOne(Image::class, 'imageable');
     }
 
-    public function comments(): MorphMany
-    {
-        return $this->morphMany(Comment::class, 'commentable');
-    }
+//    public function comments(): MorphMany
+//    {
+//        return $this->morphMany(Comment::class, 'commentable');
+//    }
 
     public function likedProfiles(): morphToMany
     {
@@ -75,4 +72,19 @@ class Post extends Model
 //    {
 //        return $this->hasMany(Log::class);
 //    }
+
+    public function getFormattedAtAttribute(): string
+    {
+        return Carbon::create($this->attributes['created_at'])->format('Y-m-d H:i:s');
+    }
+
+    public function getPublishedAtAttribute(): string
+    {
+        return Carbon::create($this->attributes['published_at'])->format('Y-m-d H:i:s');
+    }
+
+    public function getImageUrlAttribute(): string
+    {
+        return Storage::disk('public')->url($this->image_path);
+    }
 }

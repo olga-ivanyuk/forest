@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\Post\PostResource;
+use App\Http\Resources\User\UserResource;
 use App\Models\Post;
 use App\Services\PostService;
 use Illuminate\Http\Request;
@@ -12,12 +12,12 @@ class PostController extends Controller
 {
     public function index(): array
     {
-        return PostResource::collection(Post::all())->resolve();
+        return UserResource::collection(Post::all())->resolve();
     }
 
     public function show(Post $post): array
     {
-        return PostResource::make($post)->resolve();
+        return UserResource::make($post)->resolve();
     }
 
     public function store(): array
@@ -27,7 +27,7 @@ class PostController extends Controller
         ];
         $post = PostService::create($data);
 
-        return PostResource::make($post)->resolve();
+        return UserResource::make($post)->resolve();
     }
 
     public function update(Post $post)
@@ -37,7 +37,7 @@ class PostController extends Controller
         ];
         $post = PostService::update($data, $post);
 
-        return PostResource::make($post)->resolve();
+        return UserResource::make($post)->resolve();
     }
 
     public function destroy(Post $post)

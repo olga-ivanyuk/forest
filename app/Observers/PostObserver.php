@@ -42,7 +42,7 @@ class PostObserver
 //
 //        LoggingFinishedEvent::dispatch($post);
 
-//        $this->logAction('created', $post);
+        $this->logAction('created', $post);
     }
 
     public function updated(Post $post): void

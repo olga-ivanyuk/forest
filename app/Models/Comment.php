@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\BootedTrait;
 use App\Traits\Models\Traits\HasFilter;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,10 +20,10 @@ class Comment extends Model
     protected $guarded = false;
     protected $table = 'comments';
 
-//    public function post(): BelongsTo
-//    {
-//        return $this->belongsTo(Post::class);
-//    }
+    public function post(): BelongsTo
+    {
+        return $this->belongsTo(Post::class);
+    }
 
     public function profile(): BelongsTo
     {
@@ -54,4 +55,8 @@ class Comment extends Model
       return $this->morphMany(Comment::class, 'likeable');
     }
 
+    public function getFormattedAtAttribute(): string
+    {
+        return Carbon::create($this->attributes['created_at'])->format('Y-m-d H:i:s');
+    }
 }

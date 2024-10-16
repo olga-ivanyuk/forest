@@ -18,4 +18,14 @@ class TagService
 
         return $tag;
     }
+
+    public static function getOrCreateTags(array $tagTitles): array
+    {
+        $tagIds = [];
+        foreach ($tagTitles as $tagTitle) {
+            $tag = Tag::query()->firstOrCreate(['title' => $tagTitle]);
+            $tagIds[] = $tag->id;
+        }
+        return $tagIds;
+    }
 }
