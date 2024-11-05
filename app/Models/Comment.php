@@ -59,4 +59,9 @@ class Comment extends Model
     {
         return Carbon::create($this->attributes['created_at'])->format('Y-m-d H:i:s');
     }
+
+    public function replies(): HasMany
+    {
+        return $this->hasMany(Comment::class, 'parent_id');
+    }
 }

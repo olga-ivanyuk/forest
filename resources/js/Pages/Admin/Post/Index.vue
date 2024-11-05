@@ -4,6 +4,8 @@ import {Link} from "@inertiajs/vue3";
 export default {
     name: "Index",
     props: {
+        tags: Array,
+        categories: Array,
         posts: Object,
         post: Object
     },
@@ -18,7 +20,17 @@ export default {
                 profile_name: ''
             },
             postsData: this.posts,
-            currentPage: 1, // Зберігаємо поточну сторінку
+            currentPage: 1,
+            editPostId: null,
+
+            entries: {
+                post: {
+                    title: '',
+                    content: '',
+                    category_id: null,
+                },
+                tags: [],
+            }
         }
     },
 
@@ -27,7 +39,6 @@ export default {
     },
 
     mounted() {
-        console.log(this.postsData.meta.links[0]);
         const params = new URLSearchParams(window.location.search);
         const page = params.get('page') || 1;
 
@@ -66,9 +77,7 @@ export default {
             })
                 .then(res => {
                     this.postsData = res.data; // special postfix data!!!
-
                     this.currentPage = res.data.meta.current_page;
-
                     const queryObject = {
                         ...this.filter,
                         page: this.currentPage,
@@ -122,6 +131,33 @@ export default {
                 }, delay);
             };
         },
+
+        changeEditPostId(id, categoryId, title, content, tags) {
+            this.editPostId = id;
+            this.entries = {
+                post: {
+                    title: title,
+                    content: content,
+                    category_id: categoryId,
+                },
+                tags: tags.map(tag => tag.title),
+            };
+        },
+
+        updatePost(id) {
+            this.editPostId = null;
+            axios.post(route('admin.posts.update', id), this.entries)
+                .then(res => {
+                    this.getPosts(1);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        },
+
+        isEdit(id) {
+            return this.editPostId === id;
+        }
     },
 
     watch: {
@@ -138,15 +174,17 @@ export default {
 <template>
     <div class="main-container">
         <div class="mx-auto w-1/2 pt-8">
-            <div class="mb-4">
-                <Link :href="route('admin.posts.create')" class="btn-add">Add post</Link>
-            </div>
-            <div class="mb-4">
-                <Link :href="route('admin.index')" class="btn-back">Back
-                </Link>
-            </div>
-            <div class="mb-4">
-                <a @click.prevent="resetFilters" href="#" class="btn-reset">Reset</a>
+            <div class="mb-4 flex gap-4">
+                <div class="mb-4">
+                    <Link :href="route('admin.posts.create')" class="btn-add">Add post</Link>
+                </div>
+                <div class="mb-4">
+                    <Link :href="route('admin.index')" class="btn-back">Back
+                    </Link>
+                </div>
+                <div class="mb-4">
+                    <a @click.prevent="resetFilters" href="#" class="btn-reset">Reset</a>
+                </div>
             </div>
             <div class="mb-4 flex justify-between items-center">
                 <div>
@@ -166,34 +204,51 @@ export default {
                     <input type="text" class="border border-gray-200" v-model="filter.profile_name"
                            placeholder="profile_name">
                 </div>
-<!--                <div>-->
-<!--                    <a @click.prevent="getPosts(1)" href="#"-->
-<!--                       class="btn-filter">Filter</a>-->
-<!--                </div>-->
+                <!--                <div>-->
+                <!--                    <a @click.prevent="getPosts(1)" href="#"-->
+                <!--                       class="btn-filter">Filter</a>-->
+                <!--                </div>-->
             </div>
-            <div v-for="post in postsData.data" :key="post.id" class="item">
-                <Link :href="route('admin.posts.show', post.id)">
-                    <div class="text-amber-900 text-right">
-                        Category: {{ post.category }}
+            <template v-for="post in postsData.data" :key="post.id">
+                <div class="item" :class="isEdit(post.id) ? 'hidden' : ''">
+                    <div class="tags-container">
+                        <div v-for="tag in post.tags" class="tag-item">
+                            #{{ tag.title }}
+                        </div>
                     </div>
-                    <div>
-                        {{ post.id }}
+                    <Link :href="route('admin.posts.show', post.id)">
+                        <div class="text-amber-900 text-right">
+                            Category: {{ post.category }}
+                        </div>
+                        <div>{{ post.id }}</div>
+                        <div>{{ post.title }}</div>
+                        <div>{{ post.content }}</div>
+                        <div class="post-profile">
+                            Profile: {{ post.profile.name }} <br> by {{ post.profile.user }}
+                        </div>
+                        <div class="text-amber-900 text-right">
+                            {{ post.published_at }}
+                        </div>
+                    </Link>
+                    <a href="#" @click.prevent="deletePost(post.id)" class="btn-delete">Delete</a>
+                    <a href="#" @click.prevent="changeEditPostId(post.id, post.category_id, post.title, post.content, post.tags)"
+                       class="btn-edit">Edit</a>
+                </div>
+                <div :class="isEdit(post.id) ? '' : 'hidden'">
+                    <select class="input-field mb-2" v-model="entries.post.category_id">
+                        <option v-for="category in categories" :value="category.id">{{ category.title }}</option>
+                    </select>
+                    <div class="mb-2"><input type="text" class="input-field" v-model="entries.post.title"></div>
+                    <div><textarea class="input-field" v-model="entries.post.content"></textarea></div>
+                    <select class="input-field mb-4" v-model="entries.tags" multiple>
+                        <option value="">-</option>
+                        <option v-for="tag in tags" :value="tag.title">{{ tag.title }}</option>
+                    </select>
+                    <div class="mb-4">
+                        <a href="#" @click.prevent="updatePost(post.id)" class="btn-edit">Update</a>
                     </div>
-                    <div>
-                        {{ post.title }}
-                    </div>
-                    <div>
-                        {{ post.content }}
-                    </div>
-                    <div class="post-profile">
-                        Profile: {{ post.profile.name }} <br> by {{ post.profile.user }}
-                    </div>
-                    <div class="text-amber-900 text-right">
-                        {{ post.published_at }}
-                    </div>
-                </Link>
-                <a href="#" @click.prevent="deletePost(post.id)" class="btn-delete">Delete</a>
-            </div>
+                </div>
+            </template>
             <div>
                 <div v-if="postsData.data.length > 0">
                     <div v-if="postsData.data.length > 0">
@@ -221,12 +276,29 @@ export default {
     margin-top: 30px;
 }
 
+.tags-container {
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    text-align: center;
+}
+
+.tag-item {
+    background-color: #f0ad4e;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
 .btn-delete {
     padding: 10px 20px;
     text-align: center;
     text-decoration: none;
     border-radius: 5px;
     color: white;
+    margin: 2px;
     background-color: #dc3545;
 }
 
@@ -248,12 +320,13 @@ export default {
 }
 
 .btn-reset {
-    border-radius: 5px;
+    border-radius: 8px;
     text-align: center;
-    padding: 10px 20px;
+    padding:  0.5rem 1rem;
     text-decoration: none;
     color: white;
     background-color: #6c757d;
+    transition: background-color 0.3s ease;
 }
 
 .btn-reset:hover {
@@ -262,5 +335,14 @@ export default {
 
 .btn-reset:active {
     background-color: #495057;
+}
+
+.btn-edit {
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    color: white;
+    background-color: #2f5e45;
 }
 </style>

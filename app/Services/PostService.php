@@ -20,8 +20,11 @@ class PostService
         try {
             DB::beginTransaction();
             $post = Post::query()->create($data['post']);
-            $tagIds = TagService::getOrCreateTags(explode(',', $data['tags']));
-            $post->tags()->sync($tagIds);
+
+            if (!empty($data['tags'])) {
+                $tagIds = TagService::getOrCreateTags(explode(',', $data['tags']));
+                $post->tags()->sync($tagIds);
+            }
 
             DB::commit();
         } catch (\Exception $exception) {
@@ -38,10 +41,27 @@ class PostService
         return $post;
     }
 
+    /**
+     * @throws \Exception
+     */
     public static function update(array $data, Post $post): Post
     {
-        $post->update($data);
+        try {
+            DB::beginTransaction();
+            $post->update($data['post']);
+            $tagIds = TagService::getOrCreateTags($data['tags']);
+            $post->tags()->sync($tagIds);
+            DB::commit();
+        } catch (\Exception $exception) {
+            DB::rollBack();
 
+            Log::error('Failed to update post', [
+                'error' => $exception->getMessage(),
+                'data' => $data,
+            ]);
+
+            throw new \Exception('An error occurred while updating the post. Please try again.');
+        }
         return $post;
     }
 

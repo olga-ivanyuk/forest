@@ -44,7 +44,6 @@ export default {
                 },
                 tags: '',
             }
-
         }
     },
 }
@@ -71,7 +70,7 @@ export default {
                 </div>
                 <div class="mb-4">
                     <select class="input-field" v-model="entries.post.category_id">
-                        <option  hidden="hidden" :value="null">Choose category</option>
+                        <option hidden="hidden" :value="null">Choose category</option>
                         <option v-for="category in categories" :value="category.id">{{ category.title }}</option>
                     </select>
                 </div>

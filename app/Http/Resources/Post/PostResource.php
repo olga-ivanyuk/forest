@@ -3,7 +3,9 @@
 namespace App\Http\Resources\Post;
 
 use App\Http\Resources\Category\CategoryResource;
+use App\Http\Resources\Comment\CommentResource;
 use App\Http\Resources\Profile\ProfileResource;
+use App\Http\Resources\Tag\TagResource;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -17,7 +19,6 @@ class PostResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-
         return [
             'id' => $this->id,
             'formatted_at' => $this->formatted_at,
@@ -30,9 +31,9 @@ class PostResource extends JsonResource
             'status' =>  $this->status,
             'profile' => ProfileResource::make($this->profile)->resolve(),
             'category' => $this->category->title,
-//            'profile' => $this->profile->name,
-//            'category' => $this->category->title,
-//            'user' => $this->profile->user->name,
+            'category_id' => $this->category->id,
+            'tags' => TagResource::collection($this->tags)->resolve(),
+            'comments' => CommentResource::collection($this->comments)->resolve(),
         ];
     }
 }

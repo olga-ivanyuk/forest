@@ -12,18 +12,18 @@ class StoreRequest extends FormRequest
         return true;
     }
 
-    public function prepareForValidation(): void
-    {
-        if ($this->hasFile('image')) {
-            $randomNumber = rand(100000, 999999);
-            $extension = $this->file('image')->getClientOriginalExtension();
-            $imageName = $randomNumber.'.'.$extension;
-            $imagePath = Storage::disk('public')->putFileAs('images', $this->file('image'), $imageName);
-            $this->merge([
-                'image_path' => $imagePath,
-            ]);
-        }
-    }
+//    public function prepareForValidation(): void
+//    {
+//        if ($this['post']['image']) {
+//            $randomNumber = rand(100000, 999999);
+//            $extension = $this['post']['image']->getClientOriginalExtension();
+//            $imageName = $randomNumber.'.'.$extension;
+//            $imagePath = Storage::disk('public')->putFileAs('images', $this['post']['image'], $imageName);
+//            $this->merge([
+//                'image_path' => $imagePath,
+//            ]);
+//        }
+//    }
 
     public function rules(): array
     {
@@ -37,13 +37,20 @@ class StoreRequest extends FormRequest
         ];
     }
 
-    public function passedValidation()
+    public function passedValidation(): void
     {
-        return $this->merge([
-            'post' => [
-                ...$this->validated()['post'],
-                'profile_id' => auth()->user()->profile->id,
-            ],
-        ]);
+        $validatedData = $this->validated();
+
+        if (isset($validatedData['post']['image'])) {
+            $randomNumber = rand(100000, 999999);
+            $extension = $validatedData['post']['image']->getClientOriginalExtension();
+            $imageName = $randomNumber . '.' . $extension;
+            $imagePath = Storage::disk('public')->putFileAs('images', $validatedData['post']['image'], $imageName);
+            $validatedData['post']['image_path'] = $imagePath;
+        }
+
+        $validatedData['post']['profile_id'] = auth()->user()->profile->id;
+
+        $this->merge($validatedData);
     }
 }

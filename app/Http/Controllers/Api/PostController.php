@@ -3,13 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Exceptions\ExceptionFactory;
-use App\Exceptions\PostException;
 use App\Http\Controllers\Controller;
-use App\Http\Filters\PostFilter;
 use App\Http\Requests\Api\Post\IndexRequest;
 use App\Http\Requests\Post\StoreRequest;
 use App\Http\Requests\Post\UpdateRequest;
-use App\Http\Resources\Post\UserResource;
+use App\Http\Resources\Post\PostResource;
 use App\Models\Post;
 use App\Services\PostService;
 use Illuminate\Http\Response;
@@ -20,26 +18,26 @@ class PostController extends Controller
     {
         $data = $indexRequest->validated();
         $posts = Post::filter($data)->get();
-        return UserResource::collection($posts)->resolve();
+        return PostResource::collection($posts)->resolve();
     }
 
     public function show(Post $post): array
     {
-        return UserResource::make($post)->resolve();
+        return PostResource::make($post)->resolve();
     }
 
     public function store(StoreRequest $request): array
     {
         $data = $request->validated();
         $post = PostService::create($data);
-        return UserResource::make($post)->resolve();
+        return PostResource::make($post)->resolve();
     }
 
     public function update(Post $post, UpdateRequest $request): array
     {
         $data = $request->validated();
         $post = PostService::update($data, $post);
-        return UserResource::make($post)->resolve();
+        return PostResource::make($post)->resolve();
     }
 
     public function destroy(Post $post)
@@ -59,7 +57,7 @@ class PostController extends Controller
             $post->restore();
         }
 
-        return UserResource::make($post)->resolve();
+        return PostResource::make($post)->resolve();
     }
 
     /**

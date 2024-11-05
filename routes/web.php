@@ -4,7 +4,10 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [HomeController::class, 'index'])->name('home.index');
+Route::get('/posts', [HomeController::class, 'index'])->name('posts.index');
+Route::get('posts/{post}', [HomeController::class, 'show'])->name('posts.show');
+Route::post('posts/{post}/comments/{comment}/child', [HomeController::class, 'storeChildComment'])->name('posts.comments.child.store');
+Route::post('posts/{post}/comments', [HomeController::class, 'storeComment'])->name('posts.comments.store');
 
 Route::get('/profiles/main', [ProfileController::class, 'main'])->name('dashboard');
 

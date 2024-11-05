@@ -25,7 +25,7 @@ Route::group(['middleware' => ['jwt.auth', IsAdminMiddleware::class]], function 
 
     Route::apiResource('comments', CommentController::class);
 });
-Route::apiResource('posts', PostController::class);
+//Route::apiResource('posts', PostController::class);
 Route::apiResource('categories', CategoryController::class);
 Route::apiResource('profiles', ProfileController::class);
 Route::apiResource('tags', TagController::class);
