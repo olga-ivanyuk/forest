@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\Comment\CommentResource;
 use App\Models\Comment;
+use App\Models\Post;
 use App\Services\CommentService;
 use Illuminate\Http\Response;
 
@@ -44,5 +45,16 @@ class CommentController extends Controller
         return response([
             'message' => 'comment deleted',
         ], Response::HTTP_OK);
+    }
+
+    public function commentToggleLike(Post $post, $id)
+    {
+        $res = auth()->user()->profile->likedComments()->toggle($id);
+        $comment = Comment::query()->findOrFail($id);
+
+        return response()->json([
+            'is_liked' => count($res['attached']) > 0,
+            'liked_profiles_count' => $comment->likedProfiles()->count(),
+        ]);
     }
 }

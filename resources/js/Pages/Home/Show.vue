@@ -55,8 +55,11 @@ export default {
 
         storeChildComment(parentCommentId) {
             this.childComment.parent_id = parentCommentId;
-            axios.post(route('posts.comments.child.store', { post: this.post.id, comment: parentCommentId}), this.childComment)
-                .then( res => {
+            axios.post(route('posts.comments.child.store', {
+                post: this.post.id,
+                comment: parentCommentId
+            }), this.childComment)
+                .then(res => {
                     const parentComment = this.post.comments.find(comment => comment.id === parentCommentId);
                     if (parentComment) {
                         parentComment.replies = parentComment.replies || [];
@@ -70,6 +73,28 @@ export default {
                     console.error(error);
                 })
         },
+
+        toggleLike() {
+            axios.post(route('posts.likes.toggle', this.post.id))
+                .then(res => {
+                    this.post.is_liked = res.data.is_liked;
+                    this.post.liked_profiles_count = res.data.liked_profiles_count;
+                })
+                .catch(error => {
+                    console.error('Error toggling like:', error);
+                });
+        },
+
+        commentToggleLike(comment){
+            axios.post(route('posts.comment.likes.toggle', [this.post, comment.id]))
+                .then(res => {
+                   comment.is_liked = res.data.is_liked;
+                   comment.liked_profiles_count = res.data.liked_profiles_count;
+                })
+                .catch(error => {
+                    console.error('Error toggling like:', error);
+                });
+        }
     }
 }
 </script>
@@ -89,6 +114,14 @@ export default {
                     {{ post.content }}
                 </p>
             </div>
+            <div class="mb-4 flex">
+                <span>{{ post.liked_profiles_count }}</span>
+                <svg @click="toggleLike" xmlns="http://www.w3.org/2000/svg" :fill="post.is_liked ? '#000' : 'none'" viewBox="0 0 24 24"
+                     stroke-width="1.5" stroke="currentColor" class="size-6 cursor-pointer">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/>
+                </svg>
+            </div>
         </div>
 
         <div class="comment-form bg-white shadow-md rounded-lg mx-auto w-full md:w-2/3 lg:w-1/2 p-6 mt-6">
@@ -106,10 +139,6 @@ export default {
                 Comments ({{ post.comments.length }})
             </h3>
             <div v-if="post.comments.length > 0">
-                <button v-if="visibleComments < post.comments.length" @click="showMoreComments"
-                        class="btn-show-more">
-                    Show more comments
-                </button>
                 <div v-for="(comment, index) in visibleCommentsList" :key="comment.id" class="comment-container">
                     <div class="comment-content">
                         <p class="text-gray-800">{{ comment.content }}</p>
@@ -117,11 +146,20 @@ export default {
                             By {{ comment.profile }} on {{ comment.created_at }}
                         </div>
                     </div>
+                    <div class="mb-4 flex">
+                        <span>{{ comment.liked_profiles_count }}</span>
+                        <svg @click="commentToggleLike(comment)" xmlns="http://www.w3.org/2000/svg" :fill="comment.is_liked ? '#000' : 'none'" viewBox="0 0 24 24"
+                             stroke-width="1.5" stroke="currentColor" class="size-6 cursor-pointer">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/>
+                        </svg>
+                    </div>
                     <div class="text-right mt-4">
                         <a href="#" @click.prevent="openChildComment(comment.id)"
                            class="btn-reply">Reply</a>
                     </div>
-                    <div v-if="showChildComment === comment.id" class="comment-form bg-white shadow-md rounded-lg mx-auto w-full md:w-2/3 lg:w-1/2 p-6 mt-6">
+                    <div v-if="showChildComment === comment.id"
+                         class="comment-form bg-white shadow-md rounded-lg mx-auto w-full md:w-2/3 lg:w-1/2 p-6 mt-6">
                         <h3 class="text-lg font-medium text-gray-800 mb-4">Add Comment</h3>
                         <textarea v-model="childComment.content" placeholder="Write your reply here..."
                                   class="comment-textarea"></textarea>
@@ -143,6 +181,10 @@ export default {
                         </div>
                     </div>
                 </div>
+                <button v-if="visibleComments < post.comments.length" @click="showMoreComments"
+                        class="btn-show-more">
+                    Show more comments
+                </button>
             </div>
             <div v-else class="text-gray-600">No comments yet.</div>
         </div>

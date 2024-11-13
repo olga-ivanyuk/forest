@@ -100,7 +100,19 @@ export default defineComponent({
                 },
                 deep: true
             }
-        }
+        },
+
+        toggleLike(post) {
+            axios.post(route('posts.likes.toggle', post))
+                .then(res => {
+                    post.is_liked = res.data.is_liked;
+                    post.liked_profiles_count = res.data.liked_profiles_count;
+
+                })
+                .catch(error => {
+                    console.error('Error toggling like:', error);
+                });
+        },
     }
 
 })
@@ -110,7 +122,7 @@ export default defineComponent({
     <div class="main-container">
         <div class="mx-auto w-1/2 pt-8">
             <div class="mb-8 page-title">
-                Главная для пользователей
+                Головна для користувачів
             </div>
             <div class="mb-4 flex gap-4">
                 <div class="mb-4">
@@ -135,10 +147,10 @@ export default defineComponent({
                     <input type="text" class="border border-gray-200" v-model="filter.profile_name"
                            placeholder="profile_name">
                 </div>
-<!--                                <div>-->
-<!--                                    <a @click.prevent="getPosts(1)" href="#"-->
-<!--                                       class="btn-filter">Filter</a>-->
-<!--                                </div>-->
+                <!--                                <div>-->
+                <!--                                    <a @click.prevent="getPosts(1)" href="#"-->
+                <!--                                       class="btn-filter">Filter</a>-->
+                <!--                                </div>-->
             </div>
             <template v-for="post in postsData.data" :key="post.id">
                 <div class="item">
@@ -147,20 +159,29 @@ export default defineComponent({
                             #{{ tag.title }}
                         </div>
                     </div>
-                                    <Link :href="route('posts.show', post.id)">
-                    <div class="text-amber-900 text-right">
-                        Category: {{ post.category }}
+                    <Link :href="route('posts.show', post.id)">
+                        <div class="text-amber-900 text-right">
+                            Category: {{ post.category }}
+                        </div>
+                        <div>{{ post.id }}</div>
+                        <div>{{ post.title }}</div>
+                        <div>{{ post.content }}</div>
+                        <div class="post-profile">
+                            Profile: {{ post.profile.name }} <br> by {{ post.profile.user }}
+                        </div>
+                        <div class="text-amber-900 text-right">
+                            {{ post.published_at }}
+                        </div>
+                    </Link>
+                    <div class="mb-4 flex">
+                        <span>{{ post.liked_profiles_count }}</span>
+                        <svg @click="toggleLike(post)" xmlns="http://www.w3.org/2000/svg"
+                             :fill="post.is_liked ? '#000' : 'none'" viewBox="0 0 24 24"
+                             stroke-width="1.5" stroke="currentColor" class="size-6 cursor-pointer">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/>
+                        </svg>
                     </div>
-                    <div>{{ post.id }}</div>
-                    <div>{{ post.title }}</div>
-                    <div>{{ post.content }}</div>
-                    <div class="post-profile">
-                        Profile: {{ post.profile.name }} <br> by {{ post.profile.user }}
-                    </div>
-                    <div class="text-amber-900 text-right">
-                        {{ post.published_at }}
-                    </div>
-                                    </Link>
                 </div>
             </template>
             <div>
@@ -209,7 +230,7 @@ export default defineComponent({
 .btn-reset {
     border-radius: 8px;
     text-align: center;
-    padding:  0.5rem 1rem;
+    padding: 0.5rem 1rem;
     text-decoration: none;
     color: white;
     background-color: #6c757d;

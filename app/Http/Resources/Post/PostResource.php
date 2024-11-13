@@ -34,6 +34,8 @@ class PostResource extends JsonResource
             'category_id' => $this->category->id,
             'tags' => TagResource::collection($this->tags)->resolve(),
             'comments' => CommentResource::collection($this->comments)->resolve(),
+            'is_liked' => $this->is_liked,
+            'liked_profiles_count' => $this->liked_profiles_count,
         ];
     }
 }

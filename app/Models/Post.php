@@ -21,6 +21,7 @@ class Post extends Model
 
     protected $guarded = false;
     protected $table = 'posts';
+    protected $withCount = ['likedProfiles'];
 
     protected $casts = [
         'old_attributes' => 'array',
@@ -86,5 +87,10 @@ class Post extends Model
     public function getImageUrlAttribute(): string
     {
         return Storage::disk('public')->url($this->image_path);
+    }
+
+    public function getIsLikedAttribute(): bool
+    {
+        return $this->likedProfiles->contains(auth()->user()->profile);
     }
 }

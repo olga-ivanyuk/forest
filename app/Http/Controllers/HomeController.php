@@ -58,4 +58,14 @@ class HomeController extends Controller
 
         return CommentResource::make($childComment)->resolve();
     }
+
+    public function toggleLike(Post $post)
+    {
+        $res = auth()->user()->profile->likedPosts()->toggle($post->id);
+
+        return response()->json([
+            'is_liked' => count($res['attached']) > 0,
+            'liked_profiles_count' => $post->likedProfiles()->count(),
+        ]);
+    }
 }

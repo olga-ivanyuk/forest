@@ -30,7 +30,7 @@ class PostController extends Controller
         return UserResource::make($post)->resolve();
     }
 
-    public function update(Post $post)
+    public function update(Post $post): array
     {
         $data = [
             'title' => 'My post',

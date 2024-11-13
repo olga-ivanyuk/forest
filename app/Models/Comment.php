@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Comment extends Model
@@ -19,6 +20,8 @@ class Comment extends Model
 
     protected $guarded = false;
     protected $table = 'comments';
+
+    protected $withCount = ['likedProfiles'];
 
     public function post(): BelongsTo
     {
@@ -63,5 +66,15 @@ class Comment extends Model
     public function replies(): HasMany
     {
         return $this->hasMany(Comment::class, 'parent_id');
+    }
+
+    public function likedProfiles(): morphToMany
+    {
+        return $this->morphToMany(Profile::class, 'likeable');
+    }
+
+    public function getIsLikedAttribute(): bool
+    {
+        return $this->likedProfiles->contains(auth()->user()->profile);
     }
 }

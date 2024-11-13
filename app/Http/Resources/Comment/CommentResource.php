@@ -22,6 +22,8 @@ class CommentResource extends JsonResource
             'content' => $this->content,
             'profile' => $this->profile->name,
             'post' => $this->post->title,
+            'is_liked' => $this->is_liked,
+            'liked_profiles_count' => $this->liked_profiles_count,
         ];
     }
 }

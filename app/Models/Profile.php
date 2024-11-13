@@ -46,6 +46,11 @@ class Profile extends Model
 
     public function likedPosts(): MorphToMany
     {
-        return $this->morphedByMany(Post::class, 'likable');
+        return $this->morphedByMany(Post::class, 'likeable');
+    }
+
+    public function likedComments(): MorphToMany
+    {
+        return $this->morphedByMany(Comment::class, 'likeable');
     }
 }
