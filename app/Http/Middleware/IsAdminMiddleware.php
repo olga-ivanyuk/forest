@@ -18,6 +18,7 @@ class IsAdminMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         $user = auth()->user();
+
         if ($user->is_super_admin) {
             return $next($request);
         }

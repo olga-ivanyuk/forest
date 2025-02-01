@@ -33,6 +33,7 @@ export default {
         storeComment() {
             axios.post(route('posts.comments.store', this.post.id), this.comment)
                 .then(res => {
+                    console.log(res.data);
                     this.post.comments.push(res.data);
                     this.comment = {};
                     this.visibleComments = Math.min(this.visibleComments + 1, this.commentsPerPage);

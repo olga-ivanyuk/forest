@@ -10,15 +10,22 @@ use App\Mail\Comment\StoredCommentEmail;
 use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class HomeController extends Controller
 {
+    /**
+     * @param IndexRequest $request
+     * @return AnonymousResourceCollection|Response
+     */
     public function index(IndexRequest $request)
     {
         $data = $request->validationData();
-
+        $user = Auth::user();
         $posts = PostResource::collection(
             Post::filter($data)
                 ->orderBy('created_at', 'desc')
@@ -29,7 +36,7 @@ class HomeController extends Controller
             return $posts;
         }
 
-        return Inertia::render('Home/Index', compact('posts'));
+        return Inertia::render('Home/Index', compact('posts', 'user'));
     }
 
     public function show(Post $post): \Inertia\Response
@@ -44,7 +51,7 @@ class HomeController extends Controller
         $data = $request->validationData();
         $comment = $post->comments()->create($data);
         $postUrl = route('posts.show', $post->id);
-        Mail::to($post->profile->user)->send(new StoredCommentEmail($post->profile, $comment, $postUrl));
+//        Mail::to($post->profile->user)->send(new StoredCommentEmail($post->profile, $comment, $postUrl));
 
         return CommentResource::make($comment)->resolve();
     }

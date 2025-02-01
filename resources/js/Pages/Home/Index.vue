@@ -1,13 +1,14 @@
 <script>
 
 import {defineComponent} from "vue";
-import {Link} from "@inertiajs/vue3";
+import {Link, router} from "@inertiajs/vue3";
 
 export default defineComponent({
     components: {Link},
 
     props: {
         posts: Array,
+        user:Object,
     },
 
     data() {
@@ -44,7 +45,7 @@ export default defineComponent({
     methods: {
         getPosts(page = 1) {
             this.currentPage = page
-            axios.get(route('admin.posts.index'), {
+            axios.get(route('posts.index'), {
                 params: {
                     ...this.filter,
                     page: this.currentPage,
@@ -113,6 +114,21 @@ export default defineComponent({
                     console.error('Error toggling like:', error);
                 });
         },
+
+        logout() {
+            router.post(route('logout'));
+            // axios.post(route('logout'))
+            //     .then(response => {
+            //         router.visit('/login');
+            //     })
+            //     .catch(error => {
+            //         if (error.response.status === 401) {
+            //             console.error('Unauthorized: Session might have expired.');
+            //         } else {
+            //             console.error('Logout failed:', error);
+            //         }
+            //     })
+        }
     }
 
 })
@@ -124,9 +140,23 @@ export default defineComponent({
             <div class="mb-8 page-title">
                 Головна для користувачів
             </div>
+            <!-- Кнопка для авторизації -->
+            <div class="mb-4 text-right">
+                <!-- Якщо користувач не авторизований, показуємо "Увійти" -->
+                <Link v-if="!user" :href="route('login')" class="btn-auth">Увійти</Link>
+
+                <!-- Якщо користувач авторизований-->
+                <div v-else>
+                    <!-- Кнопка "Мій профіль" -->
+                    <Link :href="route('dashboard')" class="btn-auth">Мій профіль</Link>
+                    <!-- Кнопка "Вийти" -->
+                    <button @click="logout" class="btn-auth">Вийти</button>
+                </div>
+            </div>
+
             <div class="mb-4 flex gap-4">
                 <div class="mb-4">
-                    <a @click.prevent="resetFilters" href="#" class="btn-reset">Reset</a>
+                    <a @click.prevent="resetFilters" href="#" class="btn-reset">Очистити</a>
                 </div>
             </div>
             <div class="mb-4 flex justify-between items-center">
@@ -205,6 +235,19 @@ export default defineComponent({
 </template>
 
 <style scoped>
+.btn-auth {
+    padding: 8px 12px;
+    background-color: #3498db;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-left: 10px;
+}
+
+.btn-auth:hover {
+    background-color: #0056b3;
+}
+
 .post-profile {
     font-weight: bold;
     color: #38a169;

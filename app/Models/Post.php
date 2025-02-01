@@ -91,6 +91,11 @@ class Post extends Model
 
     public function getIsLikedAttribute(): bool
     {
-        return $this->likedProfiles->contains(auth()->user()->profile);
+        if (auth()->check()) {
+            return $this->likedProfiles->contains(auth()->user()->profile);
+        }
+
+        return false; // або повернути інший дефолтний стан
+
     }
 }
